@@ -531,64 +531,6 @@
     });
 })();
 
-// Hero effects for hover-capable screens: cursor spotlight and 3D tilt
-(function () {
-  "use strict";
-
-  var hero = document.querySelector("[data-hero]");
-  if (!hero) return;
-
-  // 1. Cursor spotlight tracking
-  if (window.matchMedia("(hover: hover)").matches) {
-    hero.addEventListener("pointermove", function (e) {
-      var rect = hero.getBoundingClientRect();
-      hero.style.setProperty("--mouse-x", e.clientX - rect.left + "px");
-      hero.style.setProperty("--mouse-y", e.clientY - rect.top + "px");
-    });
-  }
-
-  // 2. Interactive 3D Tilt on Showcase Card
-  var card = hero.querySelector("[data-tilt]");
-  if (card && window.matchMedia("(hover: hover) and (min-width: 992px)").matches) {
-    var isHovered = false;
-    var raf = null;
-    var targetX = 0, targetY = 0;
-    var currentX = 0, currentY = 0;
-
-    function animateTilt() {
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
-      card.style.transform = "perspective(1000px) rotateX(" + currentX.toFixed(2) + "deg) rotateY(" + currentY.toFixed(2) + "deg) translateY(-4px)";
-      if (isHovered || Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
-        raf = requestAnimationFrame(animateTilt);
-      } else {
-        card.style.transform = "";
-        raf = null;
-      }
-    }
-
-    card.addEventListener("pointerenter", function () {
-      isHovered = true;
-      if (!raf) raf = requestAnimationFrame(animateTilt);
-    });
-
-    card.addEventListener("pointermove", function (e) {
-      var rect = card.getBoundingClientRect();
-      var x = (e.clientX - rect.left) / rect.width;
-      var y = (e.clientY - rect.top) / rect.height;
-      targetX = (0.5 - y) * 14;
-      targetY = (x - 0.5) * 14;
-      if (!raf) raf = requestAnimationFrame(animateTilt);
-    });
-
-    card.addEventListener("pointerleave", function () {
-      isHovered = false;
-      targetX = 0;
-      targetY = 0;
-    });
-  }
-})();
-
 // Summit page: awards teaser fed by the same Eventhub categories API as the Awards page.
 (function () {
   "use strict";
